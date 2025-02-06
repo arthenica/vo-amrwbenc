@@ -83,14 +83,15 @@ void HP50_12k8(
 		L_tmp = 8192 ;                    /* rounding to maximise precision */
 		L_tmp += y1_lo * a[1];
 		L_tmp += y2_lo * a[2];
-		L_tmp = L_tmp >> 14;
+		L_tmp = L_shr(L_tmp, 14);
 		L_tmp += (y1_hi * a[1] + y2_hi * a[2] + (x0 + x2) * b[0] + x1 * b[1]) << 1;
-		L_tmp <<= 2;           /* coeff Q12 --> Q13 */
+		L_tmp = L_shl(L_tmp, 2);          /* coeff Q12 --> Q13 */
 		y2_hi = y1_hi;
 		y2_lo = y1_lo;
 		y1_hi = (Word16)(L_tmp>>16);
 		y1_lo = (Word16)((L_tmp & 0xffff)>>1);
-		*signal++ = extract_h((L_add((L_tmp<<1), 0x8000)));
+		L_tmp = L_shl(L_tmp, 1);
+		*signal++ = extract_h((L_add(L_tmp, 0x8000)));
 	}while(--num !=0);
 
 	*mem-- = x1;
